@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chemistry-Themed Digital Watch</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: white;
+    }
+
+    .clock-container {
+      position: relative;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1), inset 0 0 15px rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .chemistry-hour-markers {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .hour-marker {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform-origin: 0% 50%;
+      text-align: center;
+      font-size: 18px;
+      color: #ffffffcc;
+      user-select: none;
+      font-weight: 500;
+    }
+
+    .hand {
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      transform-origin: bottom center;
+      transform: translateX(-50%) rotate(0deg);
+      border-radius: 4px;
+      z-index: 10;
+    }
+
+    .hour-hand {
+      width: 6px;
+      height: 70px;
+      background: #fff;
+      z-index: 3;
+    }
+
+    .minute-hand {
+      width: 4px;
+      height: 100px;
+      background: #aaa;
+      z-index: 2;
+    }
+
+    .second-hand {
+      width: 2px;
+      height: 120px;
+      background: #ff3f34;
+      z-index: 1;
+    }
+
+    .center-dot {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #fff;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 10px #ffffff;
+    }
+
+    .digital-time-center {
+      position: absolute;
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      z-index: 20;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="clock-container">
+    <div class="chemistry-hour-markers" id="chemistryMarkers"></div>
+
+    <!-- Clock Hands -->
+    <div class="hand hour-hand" id="hourHand"></div>
+    <div class="hand minute-hand" id="minuteHand"></div>
+    <div class="hand second-hand" id="secondHand"></div>
+
+    <!-- Center Dot -->
+    <div class="center-dot"></div>
+
+    <!-- Digital Time Display in Center -->
+    <div class="digital-time-center" id="digitalTime">00:00:00</div>
+  </div>
+
+  <script>
+    // Chemistry hour markers
+    const hourMarkers = [
+      "CH₄", "C₂H₆", "C₃H₈", "C₄H₁₀", "C₅H₁₂", "C₆H₁₄",
+      "C₇H₁₆", "C₈H₁₈", "C₉H₂₀", "C₁₀H₂₂", "C₁₁H₂₄", "C₁₂H₂₆"
+    ];
+
+    const container = document.getElementById("chemistryMarkers");
+
+    hourMarkers.forEach((formula, index) => {
+      const marker = document.createElement("div");
+      marker.className = "hour-marker";
+      marker.style.transform = `rotate(${index * 30}deg) translateY(-140px)`;
+      marker.innerHTML = formula;
+      container.appendChild(marker);
+    });
+
+    const hourHand = document.getElementById("hourHand");
+    const minuteHand = document.getElementById("minuteHand");
+    const secondHand = document.getElementById("secondHand");
+    const digitalTime = document.getElementById("digitalTime");
+
+    function updateClock() {
+      const now = new Date();
+
+      const seconds = now.getSeconds();
+      const minutes = now.getMinutes();
+      const hours = now.getHours();
+
+      // Update analog hands
+      const secDeg = seconds * 6;
+      const minDeg = minutes * 6 + seconds * 0.1;
+      const hourDeg = ((hours % 12) / 12) * 360 + (minutes / 60) * 30;
+
+      secondHand.style.transform = `translateX(-50%) rotate(${secDeg}deg)`;
+      minuteHand.style.transform = `translateX(-50%) rotate(${minDeg}deg)`;
+      hourHand.style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
+
+      // Format and update digital time
+      const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      digitalTime.textContent = formattedTime;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body>
+</html>
